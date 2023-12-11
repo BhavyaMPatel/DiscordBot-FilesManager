@@ -9,17 +9,19 @@ function UploadFile(FileName){
 	client.on("ready",async ()=>{
         console.log("IB");
         /*Data Collection And Conversion*/
-		const FileData=GetFileData(`./${FileName}`)
+		const FileData=GetFileData(`${FileName}`)
         const stringData = FileData.toString("hex");
         const discordFormat = DataToDiscordFormat(stringData);
-        const FileChannelName=FilenameConvert(FileName);
+        /*File Name*/
+        const FileAName=FileName.split("/").pop();
+        const FileChannelName=FilenameConvert(FileAName);
         console.log("Data Collection And Conversion Done ........");
         /*ENV*/
         const guild = client.guilds.cache.get(process.env.GUILD_ID);
 		const category = guild.channels.cache.get(process.env.CAT_ID);
         console.log("ENV  ........");
         /*Check Compatibility*/
-        const sameNameFiles = guild.channels.cache.find((channel) => channel.name === FilenameConvert(FileName));
+        const sameNameFiles = guild.channels.cache.find((channel) => channel.name === FilenameConvert(FileAName));
         if (sameNameFiles) {
             console.error(`File: ${FileName} already exists.`);
             return client.destroy();
@@ -28,16 +30,15 @@ function UploadFile(FileName){
 		const channel = await category.children.create({
             name: FileChannelName,
         });
-
+        console.log("File Begin Upload ........");
+        
         const promises = discordFormat.map(async (message) => {
             await channel.send(message);
         });
-
+        
         await Promise.all(promises);
-
+        
         console.log(`File: ${FileName} has been uploaded.`);
-        client.destroy();
-        console.log("Fuck Bro");
 	})
 }
 

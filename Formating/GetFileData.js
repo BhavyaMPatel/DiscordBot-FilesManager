@@ -1,7 +1,11 @@
-import { readFileSync } from "fs";
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+import { readFileSync } from 'fs'
 
-function GetFileData(filepath){
-    return readFileSync(filepath);
+const modulePath = dirname(fileURLToPath(import.meta.url))
+
+function GetFileData(filename){
+    return readFileSync(filename);
 }
 
 export default GetFileData;
